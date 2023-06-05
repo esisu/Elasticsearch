@@ -1,11 +1,12 @@
-﻿using Nest;
+﻿using Elasticsearch.API.DTOs;
+using Nest;
 
 namespace Elasticsearch.API.Models
 {
     public class Product
     {
         [PropertyName("_id")]
-        public string Id { get; set; }=null!;
+        public string Id { get; set; } = null!;
 
         public string Name { get; set; } = null!;
 
@@ -18,5 +19,20 @@ namespace Elasticsearch.API.Models
         public DateTime? Updated { get; set; }
 
         public ProductFeature? Feature { get; set; }
+
+        public ProductDTO CreateDTO()
+        {
+            if (Feature == null)
+            {
+                return new ProductDTO(Id, Name, Price, Stock, null);
+            }
+
+            return new ProductDTO(Id, Name, Price, Stock, new ProductFeatureDto(Feature.Width, Feature.Height, Feature.Color));
+
+        }
+
+
+
+
     }
 }

@@ -16,14 +16,15 @@ namespace Elasticsearch.API.Services
 
         public async Task<ResponseDTO<ProductDTO>> SaveAsync(ProductCreateDTO productCreateDto)
         {
-            
-            var response = await _productRepository.SaveAsync(productCreateDto.CreateProduct());
 
-            if (response == null)
+            var responseProduct = await _productRepository.SaveAsync(productCreateDto.CreateProduct());
+
+            if (responseProduct == null)
             {
                 return ResponseDTO<ProductDTO>.Fail(new List<string>() { "hata oldu" }, HttpStatusCode.InternalServerError);
             }
 
+            return ResponseDTO<ProductDTO>.Success(responseProduct.CreateDTO(), HttpStatusCode.Created);
 
         }
 
