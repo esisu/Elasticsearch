@@ -1,5 +1,8 @@
-﻿using System.Net;
+﻿using System.Collections.Immutable;
+using System.Linq;
+using System.Net;
 using Elasticsearch.API.DTOs;
+using Elasticsearch.API.Models;
 using Elasticsearch.API.Repositories;
 
 namespace Elasticsearch.API.Services
@@ -26,6 +29,15 @@ namespace Elasticsearch.API.Services
 
             return ResponseDTO<ProductDTO>.Success(responseProduct.CreateDTO(), HttpStatusCode.Created);
 
+        }
+
+        public async Task<ResponseDTO<List<ProductDTO>>> GetAllAsync()
+        {
+            var products = await _productRepository.GetAllAsync();
+
+            var productListDto = products.Select(x => new ProductDTO(x.Id, x.Name, x.Price, x.Stock, new ProductFeatureDto(x.Feature.Width, x.Feature.Height, x.Feature.Color))).ToList();
+
+            return ResponseDTO<List<ProductDTO>>.Success(productListDto, HttpStatusCode.OK);
         }
 
     }
